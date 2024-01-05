@@ -14,10 +14,8 @@ on:
 
 jobs:
   build:
-
-    if ${{ inputs.environment }} == 'android'
+    if: ${{ inputs.environment }} == 'android'
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x]
