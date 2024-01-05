@@ -31,8 +31,8 @@ jobs:
     - run: npm install -g npm
     - name: npm install, build and test
       run: |
-        npm install
-        npm run build
+        npm install  --prefix my-app
+        npm run build  --prefix my-app
     - name: Archive Build
       uses: actions/upload-artifact@v2
       with:
