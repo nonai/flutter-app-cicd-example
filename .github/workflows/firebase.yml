@@ -15,6 +15,7 @@ on:
 jobs:
   build:
 
+    if ${{ inputs.environment }} == 'android'
     runs-on: ubuntu-latest
 
     strategy:
