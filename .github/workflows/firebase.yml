@@ -14,6 +14,7 @@ on:
 
 jobs:
   build:
+    name: "Building job for ${{ github.event.inputs.platform }}"
     if: ${{ github.event.inputs.platform }} == 'android'
     runs-on: ubuntu-latest
     strategy:
@@ -39,6 +40,7 @@ jobs:
         path: my-app/build
 
   build-ios:
+    name: "Building job for ${{ github.event.inputs.platform }}"
     if: ${{ github.event.inputs.platform }} == 'ios'
     runs-on: macOS-latest
     
