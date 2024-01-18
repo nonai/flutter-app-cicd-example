@@ -14,8 +14,8 @@ on:
 
 jobs:
   build:
-    name: "Building job for ${{ github.event.inputs.platform }}"
-    if: ${{ github.event.inputs.platform }} == 'android'
+    name: "Building job for ${{ github.event.inputs.platform }} ."
+    if: ${{ github.event.inputs.platform == 'android' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,7 +41,7 @@ jobs:
 
   build-ios:
     name: "Building job for ${{ github.event.inputs.platform }}"
-    if: ${{ github.event.inputs.platform }} == 'ios'
+    if: ${{ github.event.inputs.platform == 'ios' }}
     runs-on: macOS-latest
     
     steps:
@@ -49,7 +49,7 @@ jobs:
     
   deploy:
     name: Deploy
-    needs: build
+    needs: [build. build-ios]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
