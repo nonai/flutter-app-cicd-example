@@ -49,7 +49,7 @@ jobs:
     
   deploy:
     name: Deploy
-    needs: [build. build-ios]
+    needs: [build, build-ios]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
