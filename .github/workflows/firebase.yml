@@ -37,7 +37,14 @@ jobs:
       with:
         name: build
         path: my-app/build
-        
+
+  build-ios:
+    if: ${{ github.event.inputs.platform }} == 'ios'
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
   deploy:
     name: Deploy
     needs: build
