@@ -56,7 +56,7 @@ jobs:
             const o = context.repo.owner;
             console.log('Repo Owner:', o);
             const sha = context.payload.pull_request.head.sha;
-            const payload = "issue_number: pr, owner: o, repo: r, body: c"
+            const payload = "issue_number: " + pr + ", owner: " + o +", repo: " + r + ", body: " + c
             const covReport = "covReport-123"
 
             if (covReport) {
