@@ -2,12 +2,12 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     types: [opened, reopened, synchronize]
 
 env:
   PROPERTIES_PATH: "somekey.properties"
-  
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -68,7 +68,7 @@ jobs:
                 owner: o,
                 repo: r,
                 body: c
-		});
+              });
             } else {
               console.log('Coverage report not found.');
             }
