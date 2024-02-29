@@ -48,12 +48,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const url = context.payload.pull_request.html_url;
-            console.log('Pull Request URL:', url);
+            const prUrl = context.payload.pull_request.html_url;
+            const pr = prUrl.split('/').pop();
+            console.log('Pull Request:', pr);
+            const r = github.event.repository.name;
+            console.log('Repo Name:', r);
 
 #            const prURL = github.event.pull_request._links.html;
-#            const pr = string.split('/').pop();
-#            const r = github.event.repository.name;
 #            const o = github.event.repository.owner.login;
 #            const covReport = "covReport-123"
 
