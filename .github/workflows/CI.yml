@@ -57,11 +57,13 @@ jobs:
             console.log('Repo Owner:', o);
             const sha = context.payload.pull_request.head.sha;
             const c = `Report: [link](https://github.com/${o}/${r}/blob/${sha})`;
+            console.log('Report:', c);
             const payload = "issue_number: " + pr + ", owner: " + o +", repo: " + r + ", body: " + c
+            console.log('Payload:', payload);
             const covReport = "covReport-123"
 
             if (covReport) {
-              await github.rest.issues.createComment(payload);
+              await github.rest.issues.createComment({payload});
             } else {
               console.log('Coverage report not found.');
             }
