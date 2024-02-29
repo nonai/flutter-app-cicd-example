@@ -17,40 +17,22 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
 
-#      - uses: subosito/flutter-action@v2
-#        with:
-#          flutter-version: '3.16.5'
-#          channel: 'stable'
-
-#      - run: flutter --version
-
-      - name: Decoding base64 JKS key
-        run: |
-          echo "bm9uYWkK" | base64 --decode \
-          > somefile.txt
-          cat somefile.txt
-
-      - name: Create the key.properties file
-        run: |
-          echo keyPassword=\${{ secrets.ANDROID_KEY_STORE }} \
-          > ${{env.PROPERTIES_PATH}}
-          echo storePassword=\${{ secrets.ANDROID_KEY_PASSWORD }} \
-          >> ${{env.PROPERTIES_PATH}}
-          cat ./somekey.properties
-
-      - name: Print Event Payload
-        run: echo "${{ toJson(github.event) }}"
+      #- name: Print Event Payload
+      #  run: echo "${{ toJson(github.event) }}"
 
       - name: Extract coverage information
+        uses: actions/github-script@v7
+        if: always()
         id: coverage
-        run: |
-          const fs = require('fs');
-          const lcovContent = fs.readFileSync('lcov.info', 'utf8');
-          const lines = lcovContent.split('\n');
-          const coverage = lines.filter(line => line.startsWith('TN:')).map(line => parseFloat(line.substring(3)));
-          const averageCoverage = coverage.reduce((sum, value) => sum + value, 0) / coverage.length;
-          console.log(`Average Coverage: ${averageCoverage.toFixed(2)}%`);
-          console.log(`Coverage details: ${coverage}`);
+        with:
+          script: |
+            const fs = require('fs');
+            const lcovContent = fs.readFileSync('lcov.info', 'utf8');
+            const lines = lcovContent.split('\n');
+            const coverage = lines.filter(line => line.startsWith('TN:')).map(line => parseFloat(line.substring(3)));
+            const averageCoverage = coverage.reduce((sum, value) => sum + value, 0) / coverage.length;
+            console.log(`Average Coverage: ${averageCoverage.toFixed(2)}%`);
+            console.log(`Coverage details: ${coverage}`);
 
       - name: Comment on pull request with coverage report
         uses: actions/github-script@v7
