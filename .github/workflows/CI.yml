@@ -30,6 +30,9 @@ jobs:
           echo "bm9uYWkK" | base64 --decode \
           > somefile.txt
           cat somefile.txt
+
+      - name: Print Event Payload
+        run: echo "${{ toJson(github.event) }}"
           
       - name: Create the key.properties file
         run: |
