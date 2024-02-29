@@ -30,12 +30,20 @@ jobs:
 
       - name: Get Artifact URL
         run: |
-          echo "Artifact URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload-artifact.outputs.artifact_id }}"
+          ARTIFACT_ID=$(curl -s -X POST \
+          -H "Authorization: Bearer $GITHUB_TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" \
+            | jq -r '.artifacts[0].id')
+
+          echo "Artifact URL: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts/${ARTIFACT_ID}"
 
       - name: Run coverage calculation
+        uses: actions/github-script@v7
         if: always()
-        run: |
-          function calculateCoverage(lcovContent) {
+        with:
+          script: |
+            function calculateCoverage(lcovContent) {
               const records = lcovContent.split('end_of_record\n');
               let totalLines = 0;
               let coveredLines = 0;
@@ -49,50 +57,50 @@ jobs:
                   });
               });
               return (coveredLines / totalLines) * 100 || 0;
-          }
+            }
           
-          const lcovInfo = `
-          TN:
-          SF:src/app.controller.ts
-          FN:6,(anonymous_2)
-          FN:9,(anonymous_3)
-          FNF:2
-          FNH:2
-          FNDA:1,(anonymous_2)
-          FNDA:1,(anonymous_3)
-          DA:1,1
-          DA:2,1
-          DA:5,1
-          DA:6,1
-          DA:9,1
-          DA:10,1
-          LF:6
-          LH:6
-          BRDA:6,0,0,1
-          BRDA:6,0,1,0
-          BRDA:6,1,0,1
-          BRDA:6,1,1,1
-          BRF:4
-          BRH:3
-          end_of_record
-          TN:
-          SF:src/app.service.ts
-          FN:5,(anonymous_1)
-          FNF:1
-          FNH:1
-          FNDA:1,(anonymous_1)
-          DA:1,1
-          DA:4,1
-          DA:6,1
-          LF:3
-          LH:3
-          BRF:0
-          BRH:0
-          end_of_record
-          `;
+            const lcovInfo = `
+            TN:
+            SF:src/app.controller.ts
+            FN:6,(anonymous_2)
+            FN:9,(anonymous_3)
+            FNF:2
+            FNH:2
+            FNDA:1,(anonymous_2)
+            FNDA:1,(anonymous_3)
+            DA:1,1
+            DA:2,1
+            DA:5,1
+            DA:6,1
+            DA:9,1
+            DA:10,1
+            LF:6
+            LH:6
+            BRDA:6,0,0,1
+            BRDA:6,0,1,0
+            BRDA:6,1,0,1
+            BRDA:6,1,1,1
+            BRF:4
+            BRH:3
+            end_of_record
+            TN:
+            SF:src/app.service.ts
+            FN:5,(anonymous_1)
+            FNF:1
+            FNH:1
+            FNDA:1,(anonymous_1)
+            DA:1,1
+            DA:4,1
+            DA:6,1
+            LF:3
+            LH:3
+            BRF:0
+            BRH:0
+            end_of_record
+            `;
           
-          const coverage = calculateCoverage(lcovInfo);
-          console.log('Coverage Percentage:', coverage.toFixed(2));
+            const coverage = calculateCoverage(lcovInfo);
+            console.log('Coverage Percentage:', coverage.toFixed(2));
 
       - name: Extract coverage information
         uses: actions/github-script@v7
