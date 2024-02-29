@@ -31,9 +31,6 @@ jobs:
           > somefile.txt
           cat somefile.txt
 
-      - name: Print Event Payload
-        run: echo "${{ toJson(github.event) }}"
-          
       - name: Create the key.properties file
         run: |
           echo keyPassword=\${{ secrets.ANDROID_KEY_STORE }} \
@@ -42,6 +39,9 @@ jobs:
           >> ${{env.PROPERTIES_PATH}}
           cat ./somekey.properties
 
+      - name: Print Event Payload
+        run: echo "${{ toJson(github.event) }}"
+
       - name: Comment on pull request with coverage report
         uses: actions/github-script@v7
         if: always()
@@ -49,9 +49,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
 
-            const pr = github.event.pull_request.number;
-            const r = github.repository;
-            const o = github.repository_owner;
+            const prURL = github.event.pull_request._links.html;
+            const pr = string.split('/').pop();
+            const r = github.event.repository.name;
+            const o = github.event.repository.owner.login;
             const covReport = "covReport-123"
 
             if (covReport) {
