@@ -46,10 +46,8 @@ jobs:
 
             const pr = github.event.pull_request.number;
             const r = github.repository;
-            const o = github.repository;
-            const r = github.repository;
+            const o = github.repository_owner;
             const covReport = "covReport-123"
-
 
             if (covReport) {
               const c = `Report: [link](https://github.com/${o}/${r}/blob/${github.context.sha})`;
