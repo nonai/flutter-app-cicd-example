@@ -46,7 +46,7 @@ jobs:
         uses: actions/github-script@v7
         if: always()
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CICD_TOKEN }}
           script: |
             const prUrl = context.payload.pull_request.html_url;
             const pr = prUrl.split('/').pop();
