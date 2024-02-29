@@ -48,16 +48,18 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const url = context.payload.pull_request.html_url;
+            console.log('Pull Request URL:', url);
 
-            const prURL = github.event.pull_request._links.html;
-            const pr = string.split('/').pop();
-            const r = github.event.repository.name;
-            const o = github.event.repository.owner.login;
-            const covReport = "covReport-123"
+#            const prURL = github.event.pull_request._links.html;
+#            const pr = string.split('/').pop();
+#            const r = github.event.repository.name;
+#            const o = github.event.repository.owner.login;
+#            const covReport = "covReport-123"
 
-            if (covReport) {
-              const c = `Report: [link](https://github.com/${o}/${r}/blob/${github.context.sha})`;
-              await github.rest.issues.createComment({ issue_number: pr, owner: o, repo: r, body: c });
-            } else {
-              console.log('Coverage report not found.');
-            }
+#            if (covReport) {
+#              const c = `Report: [link](https://github.com/${o}/${r}/blob/${github.context.sha})`;
+#              await github.rest.issues.createComment({ issue_number: pr, owner: o, repo: r, body: c });
+#            } else {
+ #             console.log('Coverage report not found.');
+#            }
