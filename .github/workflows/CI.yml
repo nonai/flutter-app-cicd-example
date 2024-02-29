@@ -61,7 +61,7 @@ jobs:
             const covReport = "covReport-123"
 
             if (covReport) {
-              await github.rest.issues.createComment({payload});
+              await github.rest.issues.createComment(payload);
             } else {
               console.log('Coverage report not found.');
             }
