@@ -21,7 +21,7 @@ jobs:
       #  run: echo "${{ toJson(github.event) }}"
 
       - name: Publish coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         id: upload-artifact
         if: always()
         with:
