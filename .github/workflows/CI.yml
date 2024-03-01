@@ -32,6 +32,9 @@ jobs:
         run: |
           echo "Artifact URL: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts/${{ steps.upload-artifact.outputs.artifact-id }}'"
 
+      - name: Setup LCOV
+        uses: hrishikesh-kadam/setup-lcov@v1
+
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v3
         with:
