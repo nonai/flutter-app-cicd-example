@@ -1,14 +1,12 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   PROPERTIES_PATH: "somekey.properties"
-  
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,23 +17,57 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
 
-      - uses: subosito/flutter-action@v2
+      #- name: Print Event Payload
+      #  run: echo "${{ toJson(github.event) }}"
+
+      - name: Publish coverage report
+        uses: actions/upload-artifact@v4
+        id: upload-artifact
+        if: always()
         with:
-          flutter-version: '3.16.5'
-          channel: 'stable'
+          name: coverage-report
+          path: ./lcov.info
 
-      - run: flutter --version
+      - name: Get Artifact URL
+        run: |
+          echo "Artifact URL: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts/${{ steps.upload-artifact.outputs.artifact-id }}'"
 
-      - name: Decoding base64 JKS key
-        run: |
-          echo "bm9uYWkK" | base64 --decode \
-          > somefile.txt
-          cat somefile.txt
-          
-      - name: Create the key.properties file
-        run: |
-          echo keyPassword=\${{ secrets.ANDROID_KEY_STORE }} \
-          > ${{env.PROPERTIES_PATH}}
-          echo storePassword=\${{ secrets.ANDROID_KEY_PASSWORD }} \
-          >> ${{env.PROPERTIES_PATH}}
-          cat ./somekey.properties
+      - name: Setup LCOV
+        uses: hrishikesh-kadam/setup-lcov@v1
+
+      - name: Report code coverage
+        uses: zgosalvez/github-actions-report-lcov@v3
+        with:
+          coverage-files: lcov.info
+          artifact-name: code-coverage-report
+          github-token: ${{ secrets.CICD_TOKEN }}
+          update-comment: true
+
+      - name: Comment on pull request with coverage report
+        uses: actions/github-script@v7
+        #if: always()
+        with:
+          github-token: ${{ secrets.CICD_TOKEN }}
+          script: |
+            const prUrl = context.payload.pull_request.html_url;
+            const pr = prUrl.split('/').pop();
+            console.log('Pull Request:', pr);
+            const r = context.repo.repo;
+            console.log('Repo Name:', r);
+            const o = context.repo.owner;
+            console.log('Repo Owner:', o);
+            const sha = context.payload.pull_request.head.sha;
+            const c = `https://github.com/${o}/${r}/actions/runs/${{ github.run_id }}`;
+            console.log('Report:', c);
+            const covReport = "covReport-123";
+
+            if (covReport) {
+              await github.rest.issues.createComment({
+                issue_number: pr,
+                owner: o,
+                repo: r,
+                body: c
+              });
+            } else {
+              console.log('Coverage report not found.');
+            }
